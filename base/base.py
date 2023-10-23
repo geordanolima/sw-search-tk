@@ -6,19 +6,14 @@ class Search():
     # def __init__(self) -> None:
     #     self.result()
     
-    def result(self):
-        New_Window = Tk()
-        button_1 = Button(New_Window,
-            command=lambda: New_Window.destroy(),
-            text='close'
-        )
-        button_1.place(
-            x=10.0,
-            y=10.0,
-            width=100.0,
-            height=50.0
-        )
-        New_Window.mainloop()
+    def get_person(self, value):
+        return {
+            'name': 'Darth Vader',
+            'description': 'lord sith'
+        }
+    
+    def screen(self):
+        pass
 
 
 class Translate():
@@ -30,3 +25,6 @@ class Translate():
             return translate(text, self.to_lng)
         except Exception:
             return None
+
+
+Search().screen()

@@ -6,53 +6,89 @@
 from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-
+from tkinter import Tk, Canvas, Entry, Label, Button, PhotoImage, StringVar, Radiobutton
+from PIL import ImageTk, Image
 from base.base import Search
+from result import Result
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\search")
 
-search = Search()
+sw_search = Search()
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
+def search():
+    person = sw_search.get_person(inp_search.get())
+    nome = 'teste'
+    try:
+        canvas.delete(cv_image_person)
+        canvas.delete(rc_name)
+        canvas.delete(cv_name)
+        canvas.delete(rc_desc)
+        canvas.delete(cv_desc)
+    except Exception:
+        pass
+    lbl_description = Label(window,bd=0, bg="#000", fg="#fff", font='Helvetica 15', text=person.get('description'))
+    lbl_description.place(x=20.0, y=160.0, width=450.0, height=250.0)
+    
+    rc_name = canvas.create_rectangle(20, 135, 450, 95, fill='#000')
+    cv_name = canvas.create_text(30, 100, anchor="nw", text=nome, fill="#FFF", font=("Helvetica 20"), justify='center')
+    
+    rc_desc = canvas.create_rectangle(20, 135, 450, 95, fill='#000')
+    cv_desc = canvas.create_text(30, 100, anchor="nw", text=nome, fill="#FFF", font=("Helvetica 20"), justify='center')
+
+    rc_desc = canvas.create_rectangle(20, 400, 450, 150, fill='#222')
+    cv_desc = canvas.create_text(30, 250, anchor="nw", text='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxx', fill="#FFF", font=("Helvetica 15"), justify='left')
+    
+    img_person = Image.open(relative_to_assets("img_person.png")).resize((318, 410))
+    tk_img_person = ImageTk.PhotoImage(img_person)
+    cv_image_person = canvas.create_image(10.0, 282.0, image=tk_img_person)
+    
+    # Result(person=person).get_screen()
+
+    
 window = Tk(className='sw-search')
 
+text_search = StringVar()
+
+name = 'C3PO'
+description = ''
+
 window.geometry("835x585")
-window.configure(bg = "#000000")
+window.configure(bg="#000000")
+
+canvas = Canvas(window, bg="#000000", height=585, width=837, bd=0, highlightthickness=0, relief="ridge")
+
+canvas.place(x=0, y=0)
+img_background = PhotoImage(file=relative_to_assets("background.png"))
+background = canvas.create_image(418.0, 292.0, image=img_background)
 
 
-canvas = Canvas(window, bg = "#000000", height = 585, width = 837, bd = 0, highlightthickness = 0, relief = "ridge")
 
-canvas.place(x = 0, y = 0)
-background = PhotoImage(file=relative_to_assets("background.png"))
-image_1 = canvas.create_image(418.0, 292.0, image=background)
+inp_search = Entry(bd=0, bg="#000", fg="#fff", insertbackground='#fff', font='Helvetica 20', textvariable=text_search)
+inp_search.place(x=28.0, y=41.0, width=787.0, height=44.0)
+inp_search.focus_set()
 
-entry_1 = Entry(bd=0, bg="#000", fg="#fff", insertbackground='#fff', font='Helvetica 20')
-entry_1.place(x=28.0, y=41.0, width=787.0, height=44.0)
-entry_1.focus_set()
 
-canvas.create_rectangle(23.0, 98.0, 280.0, 125.0, fill="#000",outline="")
-canvas.create_rectangle(23.0, 135.0, 280.0, 162.0, fill="#000", outline="")
 
-canvas.create_rectangle(292.0, 98.0, 550.0, 125.0, fill="#000", outline="")
-canvas.create_rectangle(292.0, 135.0, 550.0, 162.0, fill="#000", outline="")
+# lbl_name = Label(window, bd=0, bg="#000",fg="#fff", font='Helvetica 20', text=name)
+# lbl_description = Label(window,bd=0, bg="#000", fg="#fff", font='Helvetica 15', text=description)
 
-canvas.create_rectangle(562.0, 98.0, 820.0, 125.0, fill="#000", outline="")
-canvas.create_rectangle(562.0, 135.0, 820.0, 162.0, fill="#000", outline="")
+# lbl_name.place(x=20.0, y=-100.0, width=450.0, height=44.0)
+# lbl_description.place(x=20.0, y=-160.0, width=450.0, height=250.0)
 
-button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
-button_1 = Button(image=button_image_1, borderwidth=0, highlightthickness=0, command=lambda: search.result(),
-                  relief="flat", background='#000')
-button_1.place(x=600.0, y=511.0, width=220.0, height=56.0)
+img_btn_search = PhotoImage(file=relative_to_assets("btn_buscar.png"))
+btn_search = Button(image=img_btn_search, borderwidth=0, highlightthickness=0, command=lambda: search(),
+                    relief="flat", background='#000')
+btn_search.place(x=600.0, y=511.0, width=220.0, height=56.0)
 
-button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
-button_2 = Button(image=button_image_2,  borderwidth=0, highlightthickness=0, command=lambda: print("button_2 clicked"),
-                  relief="flat", background='#000')
-button_2.place(x=367.0, y=512.0, width=220.0, height=56.0)
+img_btn_clear = PhotoImage(file=relative_to_assets("btn_limpar.png"))
+btn_clear = Button(image=img_btn_clear,  borderwidth=0, highlightthickness=0, command=lambda: text_search.set(''),
+                   relief="flat", background='#000')
+btn_clear.place(x=367.0, y=512.0, width=220.0, height=56.0)
 
 
 window.resizable(False, False)
